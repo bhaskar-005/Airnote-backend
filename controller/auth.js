@@ -72,10 +72,11 @@ exports.login = async (req, res) => {
             }
             console.log('Payload:', payload);
             const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '3d' });
-            user.token=token;
+            user.token = token;
             return res.cookie("token", token, {
                 httpOnly: true,
                 expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+                domain :'.airnote-iota.vercel.app'
             }).json({
                 message: "Logged in successfully.",
                 token,
