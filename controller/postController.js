@@ -61,24 +61,16 @@ exports.createPost = async (req, res) => {
       });
     }
 
-    try {
+    
       const imageUrl = await uploadCloudinary(path);
     
-      fs.unlink(path, (err) => {
-        if (err) {
-          console.error(`Error deleting file: ${err}`);
-        } else {
-          console.log('File deleted successfully');
-        }
-      });
-    } catch (error) {
-      console.error('Error uploading to Cloudinary:', error);
-    
-      return res.status(500).json({
-        message: 'Internal Server Error',
-        error: error.message || 'An error occurred during file upload',
-      });
-    }
+      // fs.unlink(path, (err) => {
+      //   if (err) {
+      //     console.error(`Error deleting file: ${err}`);
+      //   } else {
+      //     console.log('File deleted successfully');
+      //   }
+      // });
     
     console.log(categories);
     if (!title || !description) {
