@@ -12,7 +12,7 @@ const {getProfile} = require ('../controller/profile')
 router.post('/login',login);
 router.post('/signup',signUp);
 router.get('/logout',logout);
-router.get('/refetch',refetch); //to refetch user on reload
+router.post('/refetch',refetch); //to refetch user on reload
 
 //user Routers
 router.get('/getuser/:id',verify,getuser);

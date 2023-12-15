@@ -73,6 +73,7 @@ exports.login = async (req, res) => {
             console.log('Payload:', payload);
             const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '3d' });
             user.token = token;
+            console.log(token);
             return res.cookie("token", token, {
                 httpOnly: true,
                 expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
@@ -106,7 +107,7 @@ exports.logout = async(req,res)=>{
 
 exports.refetch = async (req, res) => {
     try {
-        const token = req.cookies.token;
+        const token = req.body.token || req.cookies.token;
 
         jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
             if (err) {
@@ -115,8 +116,7 @@ exports.refetch = async (req, res) => {
                     message: 'Unauthorized access',
                 });
             }
-
-            
+        
             res.status(200).json({
                 decoded,
                 message: 'success',

@@ -1,6 +1,7 @@
 const { query } = require("express");
 const post = require("../model/post");
 const uploadCloudinary = require("../utils/cloudinary");
+const fs = require('fs');
 
 //get post
 exports.getAllPost = async (req, res) => {
@@ -10,7 +11,8 @@ exports.getAllPost = async (req, res) => {
       title: { $regex: search, $options: "i" },
     };
     console.log(query);
-    const getpost = await post.find(search ? options : {});
+    const getpost = await post.find(search ? options : {}).sort({ createdAt: -1 });
+   
     if (getpost) {
       return res.status(200).json({
         message: "All posts fetched.",
@@ -29,6 +31,7 @@ exports.getAllPost = async (req, res) => {
 exports.getPost = async (req, res) => {
   try {
     const { id } = req.params;
+    console.log(id);
     const getpost = await post.findById(id);
     if (getpost) {
       return res.status(200).json({
@@ -58,7 +61,15 @@ exports.createPost = async (req, res) => {
     }
 
     const imageUrl = await uploadCloudinary(path);
-    
+
+    //for deleting file form server
+    fs.unlink(path, (err) => {
+      if (err) {
+        console.error(`Error deleting file: ${err}`);
+      } else {
+        console.log('File deleted successfully');
+      }
+    });
     console.log(categories);
     if (!title || !description) {
       return res.status(400).json({
@@ -105,7 +116,20 @@ exports.updatePost = async (req, res) => {
         imageUrl = await uploadCloudinary(path).catch((error) => {
            console.error("Error uploading image to Cloudinary:", error);
            return null; // Return a default value or handle the error accordingly
-        });
+        
+          });
+        
+        //for deleting file form server
+        if (imageUrl){
+           
+         fs.unlink(path, (err) => {
+          if (err) {
+           console.error(`Error deleting file: ${err}`);
+         } else {
+          console.log('File deleted successfully');
+         }
+    });
+        }
      } else {
         // If path is not available, use the existing image URL
         imageUrl = image;

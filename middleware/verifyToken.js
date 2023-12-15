@@ -3,7 +3,8 @@ const jwt = require('jsonwebtoken');
 
 
 exports.verify = async(req,res,next)=>{
-   const token = req.cookies.token;
+  const token = req.cookies.token || req.body.token || req.headers.token;
+    console.log(token);
    if(!token){
     return res.status(400).json({
         message: 'user is not authenticated.'
@@ -19,6 +20,7 @@ exports.verify = async(req,res,next)=>{
      console.error(error);
     return res.status(401).json({
     message: 'Invalid token. User authentication failed.',
-  });
+     });
    }
+   
 }
