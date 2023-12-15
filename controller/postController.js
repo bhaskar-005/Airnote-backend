@@ -51,6 +51,7 @@ exports.getPost = async (req, res) => {
 exports.createPost = async (req, res) => {
   try {
     const { title, description, category, userId, author } = req.body;
+    console.log(req.body);
     const path = req.file.path;
     const categories = category.map((category) => JSON.parse(category));
     // Check if path is not defined
@@ -60,16 +61,25 @@ exports.createPost = async (req, res) => {
       });
     }
 
-    const imageUrl = await uploadCloudinary(path);
-
-    //for deleting file form server
-    fs.unlink(path, (err) => {
-      if (err) {
-        console.error(`Error deleting file: ${err}`);
-      } else {
-        console.log('File deleted successfully');
-      }
-    });
+    try {
+      const imageUrl = await uploadCloudinary(path);
+    
+      fs.unlink(path, (err) => {
+        if (err) {
+          console.error(`Error deleting file: ${err}`);
+        } else {
+          console.log('File deleted successfully');
+        }
+      });
+    } catch (error) {
+      console.error('Error uploading to Cloudinary:', error);
+    
+      return res.status(500).json({
+        message: 'Internal Server Error',
+        error: error.message || 'An error occurred during file upload',
+      });
+    }
+    
     console.log(categories);
     if (!title || !description) {
       return res.status(400).json({
