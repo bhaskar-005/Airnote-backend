@@ -18,9 +18,20 @@ const uploadCloudinary = async(path)=>{
         }
      
     } catch (error) {
+        
         //todo : add fs to remove the currup file
-        console.log(error);
-        throw error;
+         fs.unlink(path,(err)=>{
+            if (err) {
+                console.log('error while deleting');
+            } else {
+                console.log('deleted successfully');
+            }
+         })
+        return res.status(500).json({
+            message:'problem while uploading file',
+            error
+        })
+        
     }
 }
 module.exports = uploadCloudinary;
