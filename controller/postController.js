@@ -64,13 +64,13 @@ exports.createPost = async (req, res) => {
     
       const imageUrl = await uploadCloudinary(path);
     
-      // fs.unlink(path, (err) => {
-      //   if (err) {
-      //     console.error(`Error deleting file: ${err}`);
-      //   } else {
-      //     console.log('File deleted successfully');
-      //   }
-      // });
+      fs.unlink(path, (err) => {
+        if (err) {
+          console.error(`Error deleting file: ${err}`);
+        } else {
+          console.log('File deleted successfully');
+        }
+      });
     
     console.log(categories);
     if (!title || !description) {
@@ -122,16 +122,16 @@ exports.updatePost = async (req, res) => {
           });
         
         //for deleting file form server
-        if (imageUrl){
+    //     if (imageUrl){
            
-         fs.unlink(path, (err) => {
-          if (err) {
-           console.error(`Error deleting file: ${err}`);
-         } else {
-          console.log('File deleted successfully');
-         }
-    });
-        }
+    //      fs.unlink(path, (err) => {
+    //       if (err) {
+    //        console.error(`Error deleting file: ${err}`);
+    //      } else {
+    //       console.log('File deleted successfully');
+    //      }
+    // });
+    //     }
      } else {
         // If path is not available, use the existing image URL
         imageUrl = image;
