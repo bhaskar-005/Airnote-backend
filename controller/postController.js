@@ -59,6 +59,11 @@ exports.createPost = async (req, res) => {
         message: "All fields required.",
       });
     }
+    if(!category){
+      return res.status(400).json({
+        message:'atleast one category required'
+      })
+    }
 
     let imageUrl;
     try {
@@ -121,20 +126,19 @@ exports.updatePost = async (req, res) => {
         imageUrl = await uploadCloudinary(path).catch((error) => {
            console.error("Error uploading image to Cloudinary:", error);
            return null; // Return a default value or handle the error accordingly
-        
           });
         
         //for deleting file form server
-    //     if (imageUrl){
+        if (imageUrl){
            
-    //      fs.unlink(path, (err) => {
-    //       if (err) {
-    //        console.error(`Error deleting file: ${err}`);
-    //      } else {
-    //       console.log('File deleted successfully');
-    //      }
-    // });
-    //     }
+         fs.unlink(path, (err) => {
+          if (err) {
+           console.error(`Error deleting file: ${err}`);
+         } else {
+          console.log('File deleted successfully');
+         }
+        });
+        }
      } else {
         // If path is not available, use the existing image URL
         imageUrl = image;
