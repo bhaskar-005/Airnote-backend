@@ -51,9 +51,7 @@ exports.getPost = async (req, res) => {
 exports.createPost = async (req, res) => {
   try {
     const { title, description, category, userId, author } = req.body;
-    console.log('startd creating geting all body');
     const path = req.file.path;
-    console.log('getting the file from the path ==>  ',path );
     const categories = category.map((category) => JSON.parse(category));
     // Check if path is not defined
     if (!path) {
@@ -62,9 +60,14 @@ exports.createPost = async (req, res) => {
       });
     }
 
-    console.log('starting to upload to the cloudnary');
-      const imageUrl = await uploadCloudinary(path);
-    
+      try {
+        const imageUrl = await uploadCloudinary(path);
+      } catch (error) {
+        return res.status(300,{
+          message:'mohan got stuck',
+          success:false,
+        })
+      }
       fs.unlink(path, (err) => {
         if (err) {
           console.error(`Error deleting file: ${err}`);
