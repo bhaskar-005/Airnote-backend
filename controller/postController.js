@@ -51,24 +51,19 @@ exports.getPost = async (req, res) => {
 exports.createPost = async (req, res) => {
   try {
     const { title, description, category, userId, author } = req.body;
-    const path = req.file.path;
-    const categories = category.map((category) => JSON.parse(category));
-    // Check if path is not defined
-    if (!path) {
-      return res.status(400).json({
-        message: "Please select an image file",
-      });
-    }
+    const filePath = req.file ? req.file.path : null;
+
+
     if (!title || !description) {
       return res.status(400).json({
         message: "All fields required.",
       });
     }
-     
+
     let imageUrl;
     try {
-      imageUrl= await uploadCloudinary(path);
-        fs.unlink(path, (err) => {
+      imageUrl = await uploadCloudinary(filePath);
+      fs.unlink(filePath, (err) => {
         if (err) {
           console.error(`Error deleting file: ${err}`);
         } else {
@@ -76,10 +71,13 @@ exports.createPost = async (req, res) => {
         }
       });
     } catch (error) {
-      imageUrl = 'https://cms.alhudood.net/assets/images/default-thumbnail.jpg'
+      console.error(`Error uploading file to Cloudinary: ${error}`);
+      imageUrl = 'https://cms.alhudood.net/assets/images/default-thumbnail.jpg';
     }
-        
-    const postentry = await post.create({
+
+    const categories = category.map((cat) => JSON.parse(cat));
+    
+    const postEntry = await post.create({
       title,
       description,
       image: imageUrl,
@@ -88,22 +86,25 @@ exports.createPost = async (req, res) => {
       author,
     });
 
-    if (postentry) {
+    if (postEntry) {
       return res.status(200).json({
         message: "Post entry successful.",
-        data: postentry,
+        data: postEntry,
+      });
+    } else {
+      return res.status(400).json({
+        message: "Failed to create post entry.",
       });
     }
-     
 
   } catch (error) {
+    console.error(`Error creating post: ${error}`);
     return res.status(400).json({
-      message: "Blog Not Created ,enter all fields",
-      error: error,
+      message: "Blog Not Created, please enter all fields",
+      error,
     });
   }
 };
-
 //update post
 exports.updatePost = async (req, res) => {
   try {

@@ -19,7 +19,7 @@ const uploadCloudinary = async(path)=>{
         }
      
     } catch (error) {
-        
+        console.log(error);
         //todo : add fs to remove the currup file
          fs.unlink(path,(err)=>{
             if (err) {
