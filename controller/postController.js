@@ -59,30 +59,14 @@ exports.createPost = async (req, res) => {
         message: "Please select an image file",
       });
     }
-
-      try {
-        const imageUrl = await uploadCloudinary(path);
-      } catch (error) {
-        return res.status(300,{
-          message:'mohan got stuck',
-          success:false,
-        })
-      }
-      fs.unlink(path, (err) => {
-        if (err) {
-          console.error(`Error deleting file: ${err}`);
-        } else {
-          console.log('File deleted successfully');
-        }
-      });
-    
-    console.log(categories);
     if (!title || !description) {
       return res.status(400).json({
         message: "All fields required.",
       });
     }
-
+      try {
+        const imageUrl = await uploadCloudinary(path);
+        
     const postentry = await post.create({
       title,
       description,
@@ -98,6 +82,22 @@ exports.createPost = async (req, res) => {
         data: postentry,
       });
     }
+      } catch (error) {
+        return res.status(300,{
+          message:'got stuck',
+          success:false,
+        })
+      }
+      // fs.unlink(path, (err) => {
+      //   if (err) {
+      //     console.error(`Error deleting file: ${err}`);
+      //   } else {
+      //     console.log('File deleted successfully');
+      //   }
+      // });
+    
+    
+
   } catch (error) {
     return res.status(400).json({
       message: "Blog Not Created ,enter all fields",
