@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 
 exports.verify = async(req,res,next)=>{
   const token = req.cookies.token || req.body.token || req.headers.token;
-    console.log(token);
    if(!token){
     return res.status(400).json({
         message: 'user is not authenticated.'
@@ -13,7 +12,6 @@ exports.verify = async(req,res,next)=>{
    try {
     const decoded = jwt.verify(token , process.env.JWT_SECRET);
     req.userInfo = decoded;
-    console.log('passed');
     next();
 
    } catch (error) {

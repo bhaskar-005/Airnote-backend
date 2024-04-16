@@ -23,7 +23,7 @@ router.delete('/deleteuser/:id',verify,deleteUser);
 router.get('/post',getAllPost);
 router.get('/post/:id',getPost);
 router.post('/post/createpost',verify,upload.single('image'),createPost); 
-router.put('/post/update/:id',upload.single('image'),updatePost);//verify,
+router.put('/post/update/:id',verify,upload.single('image'),updatePost);//verify,
 router.delete('/post/delete/:id',verify,deletePost);
 
 

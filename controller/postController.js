@@ -51,8 +51,9 @@ exports.getPost = async (req, res) => {
 exports.createPost = async (req, res) => {
   try {
     const { title, description, category, userId, author } = req.body;
-    console.log(req.body);
+    console.log('startd creating geting all body');
     const path = req.file.path;
+    console.log('getting the file from the path ==>  ',path );
     const categories = category.map((category) => JSON.parse(category));
     // Check if path is not defined
     if (!path) {
@@ -61,7 +62,7 @@ exports.createPost = async (req, res) => {
       });
     }
 
-    
+    console.log('starting to upload to the cloudnary');
       const imageUrl = await uploadCloudinary(path);
     
       fs.unlink(path, (err) => {

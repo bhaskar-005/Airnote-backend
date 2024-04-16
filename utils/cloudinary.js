@@ -15,13 +15,6 @@ const uploadCloudinary = async(path)=>{
         }
         const res = await cloudinary.uploader.upload(path);
         if (res) {
-           fs.unlink(path,(err)=>{
-            if (err) {
-                console.log('error while deleting');
-            } else {
-                console.log('deleted successfully');
-            }
-         }) 
            return res.secure_url;
         }
      
