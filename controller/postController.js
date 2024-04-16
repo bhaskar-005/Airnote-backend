@@ -64,8 +64,20 @@ exports.createPost = async (req, res) => {
         message: "All fields required.",
       });
     }
-      try {
-        const imageUrl = await uploadCloudinary(path);
+     
+    let imageUrl;
+    try {
+      imageUrl= await uploadCloudinary(path);
+        fs.unlink(path, (err) => {
+        if (err) {
+          console.error(`Error deleting file: ${err}`);
+        } else {
+          console.log('File deleted successfully');
+        }
+      });
+    } catch (error) {
+      imageUrl = 'https://cms.alhudood.net/assets/images/default-thumbnail.jpg'
+    }
         
     const postentry = await post.create({
       title,
@@ -82,21 +94,7 @@ exports.createPost = async (req, res) => {
         data: postentry,
       });
     }
-      } catch (error) {
-        return res.status(300,{
-          message:'got stuck',
-          success:false,
-        })
-      }
-      // fs.unlink(path, (err) => {
-      //   if (err) {
-      //     console.error(`Error deleting file: ${err}`);
-      //   } else {
-      //     console.log('File deleted successfully');
-      //   }
-      // });
-    
-    
+     
 
   } catch (error) {
     return res.status(400).json({
